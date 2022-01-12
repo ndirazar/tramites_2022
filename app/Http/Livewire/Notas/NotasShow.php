@@ -38,7 +38,8 @@ class NotasShow extends AdminComponent
         //Controla de quien es el Tramite
 
         if (is_null($userdep)) {
-            $es_mio = false;
+            //super usuario
+            $es_mio = true;
         } else {
             if ($notas->dependencia_id === $userdep->dependencia_id) {
                 $es_mio = true;

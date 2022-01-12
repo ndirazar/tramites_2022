@@ -150,7 +150,6 @@ class NotasList extends AdminComponent
                  $dependencia = Dependencia::where('id', $usuarioDepPrincipal->dependencia_id)->firstOrFail();
 
                  $generaTramite = $dependencia->genera_tramite;
-
         };
 
         return view('livewire.notas.notas-list',[
@@ -165,23 +164,30 @@ class NotasList extends AdminComponent
 
     public function isforme($id)
     {
-        $userDep= DependenciaUser::where("user_id","=",auth()->id())
-                             ->where('principal','=',true)
-                             ->first();
 
-        if (is_null($userDep)) {
-            return false;
+        $user= User::where("id","=",auth()->id())->first();
+
+        if ($user->isAdmin()) {
+            return true;
         } else {
-            $cant = Nota::where('visto','=','false')
-                        ->where('finalizada','=','false')
-                        ->where('id','=',$id)
-                        ->where('dependencia_id','=',$userDep->dependencia_id)
-                        ->count();
-            if ($cant > 0) {
-                return true;
-            } else {
+            $userDep= DependenciaUser::where("user_id","=",auth()->id())
+                                 ->where('principal','=',true)
+                                 ->first();
+
+            if (is_null($userDep)) {
                 return false;
-            };
+            } else {
+                $cant = Nota::where('visto','=','false')
+                            ->where('finalizada','=','false')
+                            ->where('id','=',$id)
+                            ->where('dependencia_id','=',$userDep->dependencia_id)
+                            ->count();
+                if ($cant > 0) {
+                    return true;
+                } else {
+                    return false;
+                };
+            }
         }
     }
 
