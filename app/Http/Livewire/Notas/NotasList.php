@@ -54,7 +54,7 @@ class NotasList extends AdminComponent
             ->join('estados', 'notas.estado_id', '=', 'estados.id')
             ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
             ->where('notas.estado_id' ,'=',1)
-            ->orderBy('notas.id','desc')
+            ->orderBy('notas.created_at','desc')
             ->paginate(7, ['*']);
 
             //Tramites Pendientes
@@ -72,7 +72,7 @@ class NotasList extends AdminComponent
                 ->join('estados', 'notas.estado_id', '=', 'estados.id')
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
                 ->where('notas.estado_id','=', 5)
-                ->orderBy('notas.id','desc')
+                ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
         } else {
             $notas = Nota::join('users', 'notas.user_id', '=', 'users.id')
@@ -81,7 +81,7 @@ class NotasList extends AdminComponent
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
 		->where('notas.estado_id' ,'=',1)
                 ->whereIn('notas.dependencia_id' ,$userdep)
-                ->orderBy('notas.id','desc')
+                ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
 
             //Tramites Pendientes
@@ -93,7 +93,7 @@ class NotasList extends AdminComponent
                 ->WhereNotIn('notas.estado_id', [1,4,5])
                 // ->where('notas.dependencia_id' ,'=',$userdep->dependencia_id)
                 ->whereIn('notas.dependencia_id' ,$userdep)
-                ->orderBy('notas.id','desc')
+                ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
 
 
@@ -103,7 +103,7 @@ class NotasList extends AdminComponent
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
                 ->where('notas.estado_id','=', 5)
                 ->whereIn('notas.dependencia_id' ,$userdep)
-                ->orderBy('notas.id','desc')
+                ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
             }
 
@@ -118,7 +118,7 @@ class NotasList extends AdminComponent
                       ->orWhere('notas.nombre', 'like', '%'.$this->nroTramite.'%')
                       ->orWhere('dependencias.nombre', 'like', '%'.$this->nroTramite.'%');
                     })
-            ->orderBy('notas.id','desc')
+            ->orderBy('notas.created_at','desc')
             ->paginate(6);
 
         $movimientos =  DB::select("SELECT movimientos.nota_id,

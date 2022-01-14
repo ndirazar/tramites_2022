@@ -75,7 +75,7 @@ class NotaCreate extends AdminComponent
 
         $date = Carbon::now();
 
-        $idNota = Nota::latest('id')->first();
+        $idNota = Nota::latest('created_at')->first();
 
         $setting = Setting::first();
 
