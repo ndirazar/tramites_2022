@@ -85,9 +85,10 @@
                                                 </td>
                                             @else
                                                 <td class="text-center">
-                                                    {{-- <a class="btn" href="{{ route('nota.notas.show', $nota->id) }}"> --}}
                                                     <a class="btn" href="{{ route('admin.notas.show', $nota->id ) }}">
-                                                        <i class="far fa-eye text-danger" data-toggle="tooltip" data-placement="top" title="Ver Nota"></i>
+                                                        <i class="far fa-eye text-danger"
+                                                           data-toggle="tooltip"
+                                                           data-placement="top" title="Ver Nota"></i>
                                                     </a>
                                                 </td>
                                             @endif
@@ -117,7 +118,7 @@
                     <div class="card-header">
                         <h5>Trámites/Notas Pendientes </h5>
                     </div>
-                    <div class="card">
+                   <div class="card">
                         <div class="card-body">
                             <table class="table table-sm table-hover">
                                 <thead>

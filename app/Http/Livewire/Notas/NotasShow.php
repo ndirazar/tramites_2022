@@ -15,6 +15,8 @@ class NotasShow extends AdminComponent
 
     public $nota_id = null;
 
+    public $es_mio = false;
+
     public $observaciones = null;
 
     public $tramiteAResolver = null;
@@ -33,26 +35,26 @@ class NotasShow extends AdminComponent
             ->select('users.*', 'notas.*', 'dependencias.nombre as oficina', 'estados.estado as estados')
             ->first();
 
-        $userdep = DependenciaUser::where("user_id", "=", auth()->id())->get();
+        $userdep= DependenciaUser::where("user_id","=",auth()->id())->get();
 
         //Controla de quien es el Tramite
 
-        if (is_null($userdep)) {
-            //super usuario
-            $es_mio = true;
-        } else {
+        if ($userdep->isEmpty()) {
+            //Super Admin
+            $this->es_mio = true;
 
+        } else {
             foreach ($userdep as $item)
                 if ($notas->dependencia_id === $item->dependencia_id) {
-                    $es_mio = true;
+                     $this->es_mio = true;
                 }
-            }
+        }
 
         $finalizado = $notas->estado_id === 5 ? true : false;
 
         return view('livewire.notas.notas-show', [
             'notas' => $notas,
-            'es_mio' => $es_mio,
+            'es_mio' => $this->es_mio,
             'finalizado' => $finalizado
         ]);
     }

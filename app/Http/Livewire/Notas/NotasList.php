@@ -37,7 +37,6 @@ class NotasList extends AdminComponent
 
         $now = Carbon::now();
 
-
         // Estados = 1 CREADO
         // Estados = 2 EN CURSO
         // Estados = 3 PENDIENTE
@@ -71,6 +70,7 @@ class NotasList extends AdminComponent
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
                 ->WhereNotIn('notas.estado_id', [1,4,5])
                 ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
+                ->where('notas.id', 'like', '%'.$this->searchTerm.'%')
                 ->orderBy('notas.id','desc')
                 ->paginate(7, ['*']);
 
@@ -82,7 +82,9 @@ class NotasList extends AdminComponent
                 ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
                 ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
+
         } else {
+
             $notas = Nota::join('users', 'notas.user_id', '=', 'users.id')
                 ->join('dependencias', 'notas.dependencia_id', '=', 'dependencias.id')
                 ->join('estados', 'notas.estado_id', '=', 'estados.id')
@@ -103,6 +105,7 @@ class NotasList extends AdminComponent
                 ->WhereNotIn('notas.estado_id', [1,4,5])
                 // ->where('notas.dependencia_id' ,'=',$userdep->dependencia_id)
                 ->whereIn('notas.dependencia_id' ,$userdep)
+                ->where('notas.id', 'like', '%'.$this->searchTerm.'%')
                 ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
                 ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
@@ -177,20 +180,24 @@ class NotasList extends AdminComponent
 
     public function isforme($id)
     {
-
         // UN USUARIO PUEDE REVOLVER TODO LO QUE TENGA A CARGO
 
         $user= User::where("id","=",auth()->id())->first();
 
         if ($user->isAdmin()) {
+
             return true;
+
         } else {
+
             $userDep= DependenciaUser::where("user_id","=",auth()->id())
                                  ->where('principal','=',true)
                                  ->first();
 
             if (is_null($userDep)) {
+
                 return false;
+
             } else {
 
                 $cant = Nota::where('visto','=','false')
