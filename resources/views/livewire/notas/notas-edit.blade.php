@@ -67,9 +67,20 @@
                                 <div class="mb-1">
                                     <label for="disabledTextInput" class="form-label col-form-label-sm">Area / Oficina
                                         Destino</label>
-                                    <input class="form-control form-control-sm" type="text"
-                                        value="{{ $notas->oficina }}" aria-label="readonly input example" disabled
-                                        readonly>
+                                        <select wire:model.defer="state.dependencia_id" class="form-control form-control-sm @error('dependencia_id') is-invalid @enderror">
+                                            <option value="{{$notas->dependencia_id}}">{{$notas->oficina}}</option>
+                                            @foreach ($dependencias as $dependencia)
+                                                {{-- <option value="{{ $dependencia->id }}">{{ $dependencia->nombre }}</option> --}}
+                                                @if ($notas->dependencia_id !== $dependencia->id)
+                                                    <option value="{{ $dependencia->id }}" @if( $dependencia->id === $notas->dependencia_id ) selected @endif >{{ $dependencia->nombre }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        @error('dependencia_id')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
                                 </div>
                                 <div class="mb-1">
                                     <label for="disabledTextInput" class="form-label col-form-label-sm">Archivo
@@ -105,7 +116,6 @@
                             Grabar Cambios
                             <i class="fas fa-check-double text-right ml-2"></i>
                         </button>
-
                     </div>
                     {{-- Boton Reenviar --}}
                     <div class="col-6 text-center">

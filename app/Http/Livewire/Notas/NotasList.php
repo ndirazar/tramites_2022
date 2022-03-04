@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class NotasList extends AdminComponent
 {
+    public $searchTerm = null;
 
     public $idExpediente = 0;
 
@@ -21,7 +22,7 @@ class NotasList extends AdminComponent
 
     protected $queryString = ['nroTramite' => ['except' => '']];
 
-    public function updatingSearch()
+    public function updatedSearchTerm()
     {
         $this->resetPage();
     }
@@ -33,6 +34,9 @@ class NotasList extends AdminComponent
 
     public function render()
     {
+
+        $now = Carbon::now();
+
 
         // Estados = 1 CREADO
         // Estados = 2 EN CURSO
@@ -54,6 +58,8 @@ class NotasList extends AdminComponent
             ->join('estados', 'notas.estado_id', '=', 'estados.id')
             ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
             ->where('notas.estado_id' ,'=',1)
+            ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
+            ->where('notas.id', 'like', '%'.$this->searchTerm.'%')
             ->orderBy('notas.created_at','desc')
             ->paginate(7, ['*']);
 
@@ -64,6 +70,7 @@ class NotasList extends AdminComponent
                 ->join('estados', 'notas.estado_id', '=', 'estados.id')
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
                 ->WhereNotIn('notas.estado_id', [1,4,5])
+                ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
                 ->orderBy('notas.id','desc')
                 ->paginate(7, ['*']);
 
@@ -72,6 +79,7 @@ class NotasList extends AdminComponent
                 ->join('estados', 'notas.estado_id', '=', 'estados.id')
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
                 ->where('notas.estado_id','=', 5)
+                ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
                 ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
         } else {
@@ -79,7 +87,9 @@ class NotasList extends AdminComponent
                 ->join('dependencias', 'notas.dependencia_id', '=', 'dependencias.id')
                 ->join('estados', 'notas.estado_id', '=', 'estados.id')
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
-		->where('notas.estado_id' ,'=',1)
+		        ->where('notas.estado_id' ,'=',1)
+                ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
+                ->where('notas.id', 'like', '%'.$this->searchTerm.'%')
                 ->whereIn('notas.dependencia_id' ,$userdep)
                 ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
@@ -93,6 +103,7 @@ class NotasList extends AdminComponent
                 ->WhereNotIn('notas.estado_id', [1,4,5])
                 // ->where('notas.dependencia_id' ,'=',$userdep->dependencia_id)
                 ->whereIn('notas.dependencia_id' ,$userdep)
+                ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
                 ->orderBy('notas.created_at','desc')
                 ->paginate(7, ['*']);
 
@@ -102,9 +113,10 @@ class NotasList extends AdminComponent
                 ->join('estados', 'notas.estado_id', '=', 'estados.id')
                 ->select('users.*','notas.*','dependencias.nombre','estados.estado as estado_nombre')
                 ->where('notas.estado_id','=', 5)
+                ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
                 ->whereIn('notas.dependencia_id' ,$userdep)
                 ->orderBy('notas.created_at','desc')
-                ->paginate(7, ['*']);
+                ->paginate(5, ['*']);
             }
 
         //EXPEDIENTES GENERADOS POR EL USUARIO
@@ -113,6 +125,7 @@ class NotasList extends AdminComponent
             ->join('estados', 'notas.estado_id', '=', 'estados.id')
             ->select('users.*','notas.*','notas.nombre as apellido','dependencias.nombre','estados.estado as estado_nombre')
             ->where('notas.user_id', '=',auth()->id())
+            ->where(DB::raw('DATE_FORMAT(notas.created_at,"%Y")') ,'=',$now->year)
             ->where(function($q) {
                     $q->where('notas.id', 'like', '%'.$this->nroTramite.'%')
                       ->orWhere('notas.nombre', 'like', '%'.$this->nroTramite.'%')

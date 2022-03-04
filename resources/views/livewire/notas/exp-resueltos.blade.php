@@ -56,6 +56,9 @@
                     </tbody>
                 </table>
                 {{-- Fin Tabla--}}
+                <div class="card-footer d-flex justify-content-end">
+                    {!! $resueltos->links() !!}
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" wire:click.prevent="" class="btn btn-danger" data-dismiss="modal"><span

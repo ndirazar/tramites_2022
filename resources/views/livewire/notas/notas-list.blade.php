@@ -30,6 +30,11 @@
                         <h5>Bandeja de Entrada - Nuevos </h5>
                     </div>
                     <div class="d-flex justify-content-between m-2">
+                        <div class="d-flex align-items-start">
+                            <label class="mt-2 mr-2" for="seacrhTerm">Buscar</label>
+                            <x-search-input wire:model="searchTerm" />
+                        </div>
+
                         <div class="d-flex align-items-end">
                             @if ($generaTramite)
                                 <a href="{{ route('admin.notas.create') }}" class="btn btn-sm btn-primary">Crear Expediente</a>
