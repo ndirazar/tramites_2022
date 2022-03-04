@@ -33,7 +33,7 @@ class NotasShow extends AdminComponent
             ->select('users.*', 'notas.*', 'dependencias.nombre as oficina', 'estados.estado as estados')
             ->first();
 
-        $userdep = DependenciaUser::where("user_id", "=", auth()->id())->first();
+        $userdep = DependenciaUser::where("user_id", "=", auth()->id())->get();
 
         //Controla de quien es el Tramite
 
@@ -41,12 +41,12 @@ class NotasShow extends AdminComponent
             //super usuario
             $es_mio = true;
         } else {
-            if ($notas->dependencia_id === $userdep->dependencia_id) {
-                $es_mio = true;
-            } else {
-                $es_mio = false;
+
+            foreach ($userdep as $item)
+                if ($notas->dependencia_id === $item->dependencia_id) {
+                    $es_mio = true;
+                }
             }
-        }
 
         $finalizado = $notas->estado_id === 5 ? true : false;
 

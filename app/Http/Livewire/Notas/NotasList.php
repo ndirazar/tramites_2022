@@ -178,6 +178,8 @@ class NotasList extends AdminComponent
     public function isforme($id)
     {
 
+        // UN USUARIO PUEDE REVOLVER TODO LO QUE TENGA A CARGO
+
         $user= User::where("id","=",auth()->id())->first();
 
         if ($user->isAdmin()) {
@@ -190,10 +192,11 @@ class NotasList extends AdminComponent
             if (is_null($userDep)) {
                 return false;
             } else {
+
                 $cant = Nota::where('visto','=','false')
                             ->where('finalizada','=','false')
                             ->where('id','=',$id)
-                            ->where('dependencia_id','=',$userDep->dependencia_id)
+                            ->where('dependencia_id','in',$userDep->dependencia_id)
                             ->count();
                 if ($cant > 0) {
                     return true;
