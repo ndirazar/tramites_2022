@@ -85,6 +85,8 @@ class NotasShow extends AdminComponent
         $mov->save();
 
         $this->dispatchBrowserEvent('resuelto', ['message' => 'Trámite Resuelto - Nro: ' . $this->tramiteAResolver]);
+
+        return redirect()->route('admin.notas.list');
     }
 
     public function resolverTramite($id)

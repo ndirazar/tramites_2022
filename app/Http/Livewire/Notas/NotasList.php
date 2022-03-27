@@ -190,20 +190,19 @@ class NotasList extends AdminComponent
 
         } else {
 
-            $userDep= DependenciaUser::where("user_id","=",auth()->id())
-                                 ->where('principal','=',true)
-                                 ->first();
+            // $userDep= DependenciaUser::where("user_id","=",auth()->id())
+            //                      ->where('principal','=',true)
+            //                      ->first();
+            $userDep= DependenciaUser::where("user_id","=",auth()->id())->get('dependencia_id')->toArray();
 
             if (is_null($userDep)) {
-
                 return false;
 
             } else {
-
                 $cant = Nota::where('visto','=','false')
                             ->where('finalizada','=','false')
                             ->where('id','=',$id)
-                            ->where('dependencia_id','in',$userDep->dependencia_id)
+                            ->whereIn('dependencia_id',$userDep)
                             ->count();
                 if ($cant > 0) {
                     return true;
